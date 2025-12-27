@@ -1,0 +1,35 @@
+# 用户数据和敏感信息
+app_state.json
+config.json
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+
+# PyInstaller 构建产物
+build/
+dist/
+*.spec
+
+# 编辑器配置
+.kiro/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 测试和缓存
+.pytest_cache/
+.hypothesis/
+tests/
+*.log
+
+# 可执行文件（xray核心需要用户自行下载）
+xray.exe
+
+# 其他
+*.bak
+*.tmp

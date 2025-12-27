@@ -1,0 +1,326 @@
+/*
+ * Aurora Theme - 极光主题样式表
+ * 彩虹渐变 + 玻璃态效果
+ */
+
+/* ===== 全局样式 ===== */
+QWidget {
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== 主窗口 ===== */
+QMainWindow {
+    background: transparent;
+}
+
+/* ===== 滚动条 ===== */
+QScrollBar:vertical {
+    background: rgba(255, 255, 255, 0.05);
+    width: 8px;
+    border-radius: 4px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(120, 0, 255, 0.6),
+        stop:1 rgba(0, 212, 255, 0.6)
+    );
+    border-radius: 4px;
+    min-height: 30px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(140, 20, 255, 0.8),
+        stop:1 rgba(20, 232, 255, 0.8)
+    );
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+QScrollBar:horizontal {
+    background: rgba(255, 255, 255, 0.05);
+    height: 8px;
+    border-radius: 4px;
+    margin: 0;
+}
+
+QScrollBar::handle:horizontal {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 rgba(120, 0, 255, 0.6),
+        stop:1 rgba(0, 212, 255, 0.6)
+    );
+    border-radius: 4px;
+    min-width: 30px;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0;
+}
+
+/* ===== 按钮 ===== */
+QPushButton {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0 rgba(120, 0, 255, 0.6),
+        stop:1 rgba(0, 212, 255, 0.6)
+    );
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0 rgba(140, 20, 255, 0.8),
+        stop:1 rgba(20, 232, 255, 0.8)
+    );
+}
+
+QPushButton:pressed {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0 rgba(100, 0, 200, 0.8),
+        stop:1 rgba(0, 180, 220, 0.8)
+    );
+}
+
+QPushButton:disabled {
+    background: rgba(100, 100, 100, 0.4);
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ===== 输入框 ===== */
+QLineEdit {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: white;
+    selection-background-color: rgba(120, 0, 255, 0.5);
+}
+
+QLineEdit:focus {
+    border: 1px solid rgba(120, 0, 255, 0.5);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+QLineEdit:disabled {
+    background: rgba(100, 100, 100, 0.2);
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ===== 文本编辑框 ===== */
+QTextEdit {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+    selection-background-color: rgba(120, 0, 255, 0.5);
+}
+
+QTextEdit:focus {
+    border: 1px solid rgba(120, 0, 255, 0.5);
+}
+
+/* ===== 数字输入框 ===== */
+QSpinBox {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+}
+
+QSpinBox:focus {
+    border: 1px solid rgba(120, 0, 255, 0.5);
+}
+
+QSpinBox::up-button,
+QSpinBox::down-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 20px;
+}
+
+QSpinBox::up-button:hover,
+QSpinBox::down-button:hover {
+    background: rgba(120, 0, 255, 0.3);
+}
+
+/* ===== 复选框 ===== */
+QCheckBox {
+    color: rgba(255, 255, 255, 0.85);
+    spacing: 10px;
+}
+
+QCheckBox::indicator {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+QCheckBox::indicator:hover {
+    border: 2px solid rgba(120, 0, 255, 0.5);
+}
+
+QCheckBox::indicator:checked {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:1,
+        stop:0 #7800ff,
+        stop:1 #00d4ff
+    );
+    border: none;
+}
+
+/* ===== 表格 ===== */
+QTableWidget {
+    background: transparent;
+    border: none;
+    gridline-color: rgba(255, 255, 255, 0.05);
+    selection-background-color: rgba(120, 0, 255, 0.3);
+}
+
+QTableWidget::item {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+QTableWidget::item:selected {
+    background: rgba(120, 0, 255, 0.3);
+}
+
+QTableWidget::item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+QHeaderView::section {
+    background: rgba(40, 40, 60, 0.8);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: bold;
+}
+
+/* ===== 菜单 ===== */
+QMenu {
+    background: rgba(30, 30, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 8px;
+}
+
+QMenu::item {
+    padding: 10px 30px;
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+}
+
+QMenu::item:selected {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 rgba(120, 0, 255, 0.5),
+        stop:1 rgba(0, 212, 255, 0.3)
+    );
+}
+
+QMenu::separator {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 5px 15px;
+}
+
+/* ===== 工具提示 ===== */
+QToolTip {
+    background: rgba(30, 30, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+}
+
+/* ===== 进度条 ===== */
+QProgressBar {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #7800ff,
+        stop:0.5 #00d4ff,
+        stop:1 #7800ff
+    );
+    border-radius: 4px;
+}
+
+/* ===== 标签 ===== */
+QLabel {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===== 分组框 ===== */
+QGroupBox {
+    background: rgba(40, 40, 60, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+QGroupBox::title {
+    color: rgba(255, 255, 255, 0.9);
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 5px 15px;
+}
+
+/* ===== 选项卡 ===== */
+QTabWidget::pane {
+    background: rgba(30, 30, 50, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+QTabBar::tab {
+    background: rgba(40, 40, 60, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px 20px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+QTabBar::tab:selected {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 rgba(120, 0, 255, 0.4),
+        stop:1 rgba(0, 212, 255, 0.2)
+    );
+    color: white;
+}
+
+QTabBar::tab:hover:!selected {
+    background: rgba(255, 255, 255, 0.1);
+}
