@@ -741,7 +741,17 @@ class MainWindow(QMainWindow):
         
         # 使用 tb.png 作为图标
         from PyQt6.QtGui import QPixmap
-        icon_path = Path(__file__).parent / "tb.png"
+        import sys
+        
+        # 支持 PyInstaller 打包后的路径
+        if getattr(sys, 'frozen', False):
+            # 打包后的路径
+            base_path = Path(sys._MEIPASS)
+        else:
+            # 开发环境路径
+            base_path = Path(__file__).parent
+        
+        icon_path = base_path / "tb.png"
         if icon_path.exists():
             self.tray_icon.setIcon(QIcon(str(icon_path)))
         else:
