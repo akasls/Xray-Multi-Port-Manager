@@ -739,31 +739,31 @@ class MainWindow(QMainWindow):
         """设置系统托盘"""
         self.tray_icon = QSystemTrayIcon(self)
         
-        # 使用 tb.png 作为图标
         from PyQt6.QtGui import QPixmap
         import sys
         
         # 支持 PyInstaller 打包后的路径
         if getattr(sys, 'frozen', False):
-            # 打包后的路径
             base_path = Path(sys._MEIPASS)
         else:
-            # 开发环境路径
             base_path = Path(__file__).parent
         
-        icon_path = base_path / "tb.png"
-        if icon_path.exists():
-            app_icon = QIcon(str(icon_path))
-            self.tray_icon.setIcon(app_icon)
-            # 同时设置窗口图标（任务栏显示）
-            self.setWindowIcon(app_icon)
+        # 优先使用 ico 文件（Windows 任务栏图标）
+        ico_path = base_path / "tb.ico"
+        png_path = base_path / "tb.png"
+        
+        if ico_path.exists():
+            app_icon = QIcon(str(ico_path))
+        elif png_path.exists():
+            app_icon = QIcon(str(png_path))
         else:
             # 回退到简单图标
             pixmap = QPixmap(32, 32)
             pixmap.fill(QColor(T('PRIMARY')))
             app_icon = QIcon(pixmap)
-            self.tray_icon.setIcon(app_icon)
-            self.setWindowIcon(app_icon)
+        
+        self.tray_icon.setIcon(app_icon)
+        self.setWindowIcon(app_icon)
         
         self.tray_icon.setToolTip(APP_NAME)
         
