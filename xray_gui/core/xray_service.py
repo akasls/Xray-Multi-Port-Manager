@@ -4,8 +4,15 @@ Xray 服务管理器 - 管理 Xray 进程
 import os
 import subprocess
 import time
+import logging
 from typing import Optional
 from enum import Enum
+
+try:
+    from .process_monitor import process_monitor, ProcessInfo
+except ImportError:
+    process_monitor = None
+    ProcessInfo = None
 
 
 class ServiceStatus(Enum):
@@ -32,6 +39,7 @@ class XrayService:
         self._process: Optional[subprocess.Popen] = None
         self._status = ServiceStatus.STOPPED
         self._error_message = ""
+        self.logger = logging.getLogger(__name__)
     
     @property
     def status(self) -> ServiceStatus:
@@ -53,7 +61,15 @@ class XrayService:
         if self._process is None:
             self._status = ServiceStatus.STOPPED
         elif self._process.poll() is None:
-            self._status = ServiceStatus.RUNNING
+            # 进程仍在运行，但需要验证是否真的在运行
+            if process_monitor and hasattr(self._process, 'pid'):
+                if process_monitor.is_process_running(self._process.pid):
+                    self._status = ServiceStatus.RUNNING
+                else:
+                    self._status = ServiceStatus.STOPPED
+                    self._process = None
+            else:
+                self._status = ServiceStatus.RUNNING
         else:
             self._status = ServiceStatus.STOPPED
             self._process = None
@@ -205,6 +221,37 @@ class XrayService:
     def kill_all_xray(self) -> None:
         """杀死所有 xray 进程"""
         try:
-            os.system(f'taskkill /f /im {os.path.basename(self.xray_path)} >nul 2>&1')
-        except Exception:
-            pass
+            if process_monitor:
+                # 使用进程监控器更精确地终止进程
+                killed_count = process_monitor.kill_processes_by_name("xray", exact_match=False)
+                if killed_count > 0:
+                    self.logger.info(f"Killed {killed_count} xray processes")
+            else:
+                # 回退到系统命令
+                os.system(f'taskkill /f /im {os.path.basename(self.xray_path)} >nul 2>&1')
+        except Exception as e:
+            self.logger.error(f"Error killing xray processes: {e}")
+    
+    def get_process_info(self) -> Optional[ProcessInfo]:
+        """
+        获取当前Xray进程信息
+        
+        Returns:
+            进程信息，如果进程不存在返回None
+        """
+        if not self._process or not process_monitor:
+            return None
+        
+        return process_monitor.get_process_info(self._process.pid)
+    
+    def get_all_xray_processes(self) -> list:
+        """
+        获取所有Xray进程信息
+        
+        Returns:
+            Xray进程信息列表
+        """
+        if not process_monitor:
+            return []
+        
+        return process_monitor.find_processes_by_name("xray", exact_match=False)

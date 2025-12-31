@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QGraphicsDropShadowEffect, QSizePolicy
 )
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtSignal
-from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtGui import QColor, QFont, QPainterPath, QRegion
 
 from .widgets.aurora_background import AuroraBackground
 
@@ -21,6 +21,9 @@ class MainWindow(QMainWindow):
     settings_requested = pyqtSignal()
     minimize_requested = pyqtSignal()
     
+    # 圆角半径
+    CORNER_RADIUS = 8
+    
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Xray GUI Manager")
@@ -31,6 +34,15 @@ class MainWindow(QMainWindow):
         self._drag_pos = None
         self._setup_ui()
         self._apply_styles()
+        self._update_mask()
+    
+    def _update_mask(self):
+        """更新窗口遮罩以实现圆角效果"""
+        path = QPainterPath()
+        path.addRoundedRect(0, 0, self.width(), self.height(), 
+                          self.CORNER_RADIUS, self.CORNER_RADIUS)
+        region = QRegion(path.toFillPolygon().toPolygon())
+        self.setMask(region)
     
     def _setup_ui(self):
         self.central_widget = QWidget()
@@ -132,6 +144,8 @@ class MainWindow(QMainWindow):
             self.aurora_bg.setGeometry(0, 0, self.width(), self.height())
         if hasattr(self, 'content_container'):
             self.content_container.setGeometry(0, 0, self.width(), self.height())
+        # 更新圆角遮罩
+        self._update_mask()
     
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:

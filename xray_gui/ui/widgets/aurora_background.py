@@ -132,46 +132,52 @@ class AuroraBackground(QWidget):
             painter.drawEllipse(QPointF(x, y), size, size)
     
     def _draw_border_mask(self, painter, width, height):
-        """绘制边框圆角"""
-        # 创建圆角矩形路径
-        radius = 12
+        """绘制边框圆角 - 使用透明遮罩实现真正的圆角效果"""
+        # 使用较小的圆角半径
+        radius = 8
         
-        # 绘制四个角的遮罩
-        painter.setBrush(QBrush(QColor(0, 0, 0, 0)))
         painter.setPen(Qt.PenStyle.NoPen)
         
-        # 使用深色填充角落（模拟圆角效果）
-        corner_color = QColor(15, 15, 30)
-        painter.setBrush(QBrush(corner_color))
+        # 使用完全透明的颜色来"切掉"角落
+        # 由于窗口设置了 WA_TranslucentBackground，透明区域会显示桌面
+        transparent = QColor(0, 0, 0, 0)
         
-        # 左上角
+        # 左上角 - 切掉角落使其变圆
         path = QPainterPath()
         path.moveTo(0, 0)
         path.lineTo(radius, 0)
         path.arcTo(0, 0, radius * 2, radius * 2, 90, 90)
+        path.lineTo(0, 0)
         path.closeSubpath()
-        painter.fillPath(path, corner_color)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Clear)
+        painter.fillPath(path, transparent)
         
         # 右上角
         path = QPainterPath()
         path.moveTo(width, 0)
         path.lineTo(width - radius, 0)
         path.arcTo(width - radius * 2, 0, radius * 2, radius * 2, 90, -90)
+        path.lineTo(width, 0)
         path.closeSubpath()
-        painter.fillPath(path, corner_color)
+        painter.fillPath(path, transparent)
         
         # 左下角
         path = QPainterPath()
         path.moveTo(0, height)
         path.lineTo(0, height - radius)
         path.arcTo(0, height - radius * 2, radius * 2, radius * 2, 180, 90)
+        path.lineTo(0, height)
         path.closeSubpath()
-        painter.fillPath(path, corner_color)
+        painter.fillPath(path, transparent)
         
         # 右下角
         path = QPainterPath()
         path.moveTo(width, height)
         path.lineTo(width, height - radius)
         path.arcTo(width - radius * 2, height - radius * 2, radius * 2, radius * 2, 0, -90)
+        path.lineTo(width, height)
         path.closeSubpath()
-        painter.fillPath(path, corner_color)
+        painter.fillPath(path, transparent)
+        
+        # 恢复正常绘制模式
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)

@@ -1,6 +1,7 @@
 # 用户数据和敏感信息
 app_state.json
 config.json
+config/
 
 # Python 缓存
 __pycache__/

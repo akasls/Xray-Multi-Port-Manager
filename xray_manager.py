@@ -202,7 +202,7 @@ class GlassCard(QFrame):
             #glassCard {{
                 background: {T('BG_CARD')};
                 border: 1px solid {T('BORDER')};
-                border-radius: 16px;
+                border-radius: 10px;
             }}
         """)
         shadow = QGraphicsDropShadowEffect(self)
@@ -585,13 +585,13 @@ class SettingsDialog(QDialog):
             #settingsContainer {{
                 background: {T('BG_CARD')};
                 border: 1px solid {T('BORDER')};
-                border-radius: 16px;
+                border-radius: 10px;
             }}
             #titleBar {{
                 background: {T('BG_INPUT')};
                 border-bottom: 1px solid {T('BORDER')};
-                border-top-left-radius: 16px;
-                border-top-right-radius: 16px;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
             }}
             #dialogTitle {{ font-size: 14px; font-weight: 600; color: {T('TEXT_PRIMARY')}; }}
             #settingsScroll {{ 
@@ -611,8 +611,8 @@ class SettingsDialog(QDialog):
             #btnBar {{
                 background: {T('BG_INPUT')};
                 border-top: 1px solid {T('BORDER')};
-                border-bottom-left-radius: 16px;
-                border-bottom-right-radius: 16px;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
             }}
             #cancelBtn {{
                 background: transparent;
@@ -696,6 +696,10 @@ class MainWindow(QMainWindow):
         # 无边框窗口
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        
+        # 设置窗口圆角裁剪
+        from PyQt6.QtGui import QRegion, QPainterPath
+        from PyQt6.QtCore import QRectF
         
         self._drag_pos = None
         self._running = False
@@ -1027,13 +1031,13 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(f"""
             #mainContainer {{
                 background: {T('BG_DARK')};
-                border-radius: 12px;
+                border-radius: 8px;
             }}
             #customTitleBar {{
                 background: {T('BG_CARD')};
                 border-bottom: 1px solid {T('BORDER')};
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
             }}
             #appTitle {{
                 font-size: 14px;
@@ -1050,6 +1054,8 @@ class MainWindow(QMainWindow):
             }}
             #contentArea {{
                 background: {T('BG_DARK')};
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
             }}
             #fieldLabel {{
                 font-size: 11px;
@@ -1096,8 +1102,8 @@ class MainWindow(QMainWindow):
             #tableHeader {{
                 background: {T('BG_INPUT')};
                 border-bottom: 1px solid {T('BORDER')};
-                border-top-left-radius: 16px;
-                border-top-right-radius: 16px;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
             }}
             #listTitle {{
                 font-size: 13px;
@@ -1111,8 +1117,8 @@ class MainWindow(QMainWindow):
             #nodeTable {{
                 background: {T('BG_CARD')};
                 border: none;
-                border-bottom-left-radius: 16px;
-                border-bottom-right-radius: 16px;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
                 gridline-color: transparent;
             }}
             #nodeTable::item {{
@@ -1182,6 +1188,18 @@ class MainWindow(QMainWindow):
         self._drag_pos = None
         super().mouseReleaseEvent(event)
     
+    def resizeEvent(self, event):
+        """重写 resizeEvent 以设置窗口圆角遮罩"""
+        from PyQt6.QtGui import QPainterPath, QRegion
+        from PyQt6.QtCore import QRectF
+        
+        path = QPainterPath()
+        # 使用 8px 圆角
+        path.addRoundedRect(QRectF(self.rect()), 8, 8)
+        region = QRegion(path.toFillPolygon().toPolygon())
+        self.setMask(region)
+        super().resizeEvent(event)
+    
     # ========== 业务逻辑 ==========
     def _load_state(self):
         if CONFIG_FILE.exists():
@@ -1212,7 +1230,28 @@ class MainWindow(QMainWindow):
                             address=nd.get('address', ''),
                             port=nd.get('port', 443),
                             uuid=nd.get('uuid', ''),
-                            remark=nd.get('remark', '')
+                            remark=nd.get('remark', ''),
+                            # 网络和安全设置
+                            network=nd.get('network', 'tcp'),
+                            security=nd.get('security', ''),
+                            sni=nd.get('sni', ''),
+                            fingerprint=nd.get('fingerprint', ''),
+                            alpn=nd.get('alpn', ''),
+                            # WebSocket 设置
+                            path=nd.get('path', ''),
+                            host=nd.get('host', ''),
+                            # gRPC 设置
+                            service_name=nd.get('service_name', ''),
+                            # Reality 设置
+                            public_key=nd.get('public_key', ''),
+                            short_id=nd.get('short_id', ''),
+                            # VLESS flow
+                            flow=nd.get('flow', ''),
+                            # VMess 设置
+                            alter_id=nd.get('alter_id', 0),
+                            method=nd.get('method', ''),
+                            # Shadowsocks/Trojan 密码
+                            password=nd.get('password', '')
                         )
                         node.local_port = nd.get('local_port')
                         node.latency = nd.get('latency')
@@ -1235,7 +1274,22 @@ class MainWindow(QMainWindow):
         nodes_data = [{
             'protocol': n.protocol, 'address': n.address, 'port': n.port,
             'uuid': n.uuid, 'remark': n.remark, 'local_port': n.local_port,
-            'latency': n.latency
+            'latency': n.latency,
+            # 网络和安全设置
+            'network': n.network, 'security': n.security, 'sni': n.sni,
+            'fingerprint': n.fingerprint, 'alpn': n.alpn,
+            # WebSocket 设置
+            'path': n.path, 'host': n.host,
+            # gRPC 设置
+            'service_name': n.service_name,
+            # Reality 设置
+            'public_key': n.public_key, 'short_id': n.short_id,
+            # VLESS flow
+            'flow': n.flow,
+            # VMess 设置
+            'alter_id': n.alter_id, 'method': n.method,
+            # Shadowsocks/Trojan 密码
+            'password': n.password
         } for n in self._nodes]
         
         state = {
