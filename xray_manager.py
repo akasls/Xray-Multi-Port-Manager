@@ -753,12 +753,17 @@ class MainWindow(QMainWindow):
         
         icon_path = base_path / "tb.png"
         if icon_path.exists():
-            self.tray_icon.setIcon(QIcon(str(icon_path)))
+            app_icon = QIcon(str(icon_path))
+            self.tray_icon.setIcon(app_icon)
+            # 同时设置窗口图标（任务栏显示）
+            self.setWindowIcon(app_icon)
         else:
             # 回退到简单图标
             pixmap = QPixmap(32, 32)
             pixmap.fill(QColor(T('PRIMARY')))
-            self.tray_icon.setIcon(QIcon(pixmap))
+            app_icon = QIcon(pixmap)
+            self.tray_icon.setIcon(app_icon)
+            self.setWindowIcon(app_icon)
         
         self.tray_icon.setToolTip(APP_NAME)
         
